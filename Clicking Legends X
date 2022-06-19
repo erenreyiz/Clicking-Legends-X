@@ -2,8 +2,8 @@
 local function rgbToHex(rgb)
 local hexadecimal = '0X'
 for key, value in pairs(rgb) do
-   local hex = ''
-   while(value > 0)do
+    local hex =  string.format("%x", x)
+    return hex:len() == 1 and "0"..hex or hex
 local index = math.fmod(value, 16) + 1
 value = math.floor(value / 16)
 hex = string.sub('0123456789ABCDEF', index, index) .. hex
