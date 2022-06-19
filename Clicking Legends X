@@ -1,0 +1,116 @@
+-- Get Text Color
+local function rgbToHex(rgb)
+local hexadecimal = '0X'
+for key, value in pairs(rgb) do
+   local hex = ''
+   while(value > 0)do
+local index = math.fmod(value, 16) + 1
+value = math.floor(value / 16)
+hex = string.sub('0123456789ABCDEF', index, index) .. hex
+end
+if(string.len(hex) == 0)then
+hex = '00'
+elseif(string.len(hex) == 1)then
+hex = '0' .. hex
+end
+hexadecimal = hexadecimal .. hex
+end
+return hexadecimal
+end
+
+-- Getting some info needed for webhook
+local username = game:GetService("Players").LocalPlayer.Name
+local userid = game:GetService("Players").LocalPlayer.UserId
+local icon = "https://www.roblox.com/headshot-thumbnail/image?userId="..userid.."&width=420&height=420&format=png"
+
+-- Some Random Notification stuff
+if _G.SendNotifications == true then
+    	game.StarterGui:SetCore(
+               	"SendNotification",
+                {
+			Title = "CLX Pet Hatcher",
+			Text = "Version 1.0.0, Updated and Maintained by Leichtespiele#6050",
+			Duration = 5
+		}
+	)
+        
+        game.StarterGui:SetCore(
+		"SendNotification",
+                {
+                    	Title = "CLX Pet Hatcher",
+                   	Text = "If you run into any bugs, please let me know! Contact me via discord",
+                    	Duration = 5
+               	}
+        )
+elseif _G.SendNotifications == false then
+        end
+
+-- Connecting to chat
+local Headers = {["content-type"] = "application/json"}
+local Chat = game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller
+
+-- The Main Function
+Chat.ChildAdded:Connect(function(instance)
+    if string.find(instance.TextLabel.Text,"Server") then
+        if string.find(instance.TextLabel.Text,_G.Username) then
+                if string.find(instance.TextLabel.Text,"hatched") then
+                    if string.find(instance.TextLabel.Text,"a") then
+                        
+                        -- Other Features
+                        local OSTime = os.time()
+                        local Webhook = _G.Webhook
+                        local Time = os.date('!*t', OSTime)
+                        local TextColor3 = instance.TextLabel.TextColor3
+                        local RGB = {TextColor3.R*255,TextColor3.G*255,TextColor3.B*255}
+                        local Hex = tonumber(rgbToHex({RGB[1],RGB[2],RGB[3]}))
+
+                        if string.find(instance.Textlabel.Text,"Patriotic Wisp") then
+                            HatchText = username .. " just hatched a **Legendary Patriotic Wisp**! (**0.1**)"
+
+                        elseif string.find(instance.TextLabel.Text,"Patriotic Domihydra") then
+                            HatchText = username .. " hatched a **Legendary Patriotic Domihydra**! (**0.05**)"
+
+                        elseif string.find(instance.TextLabel.Text,"Grand Patriotic Overlord") then
+                            HatchText = username .. " hatched a **SECRET Grand Patriotic Overlord**! (**0.0002%**)"
+                        end
+
+                        local SecretPing
+                        if string.find(instance.TextLabel.Text,"Secret") then
+                            SecretPing = _G.SecretPing
+                        else
+                            SecretPing = ""
+
+                        local Info = {
+                            ["content"] = _G.SecretPing
+                            ["embeds"] = {
+                            {
+                                    ["description"] = HatchText,
+                            ["author"] = {
+                                ["name"] = username
+                                ["url"] = "https://www.roblox.com/users/".. userid .."/profile",
+                                ["icon_url"] = icon,
+                            },
+                            ["thumbnail"] = {
+                                ["Url"] = PetImage
+                            },
+                            ["footer"] = {
+                                ["text"] = "Clicking Legends X"
+                            },
+                            ['timestamp'] = string.format('%d-%d-%dT%02d:%02d:%02dZ', Time.year, Time.month, Time.day, Time.hour, Time.min, Time.sec),
+                            ["color"] = Hex,
+                            ["fields"] = {},
+
+                            local Info = game:GetService("HttpService"):JSONEncode(Info)
+                            local HttpRequest = http_request;
+                            if syn then HttpRequest = syn.request else HttpRequest = http_request end
+                            HttpRequest({Url=Webhook, Body=Info, Method="POST", Headers=Headers})
+                                }
+                            }
+                        }
+                    end
+                end
+            end
+        end
+    end
+end)
+print('CLicking Legends X Pet Hatcher V1.0, Updated and Maintained by Leichtespiele#6050')
